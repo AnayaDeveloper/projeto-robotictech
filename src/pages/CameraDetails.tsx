@@ -69,6 +69,10 @@ const CameraDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const camera = camerasMock.find(cam => cam.id === id);
 
+  // Estado para edição de áreas
+  const [editandoAreas, setEditandoAreas] = React.useState(false);
+  const [novoPoligono, setNovoPoligono] = React.useState<[number, number][]>([]);
+
   if (!camera) {
     return <div>Câmera não encontrada.</div>;
   }
@@ -99,11 +103,38 @@ const CameraDetails: React.FC = () => {
   const areas = areasProibidasMock.find(a => a.cameraId === camera.id)?.areas || [];
   const boxes = deteccoesIAMock.find(d => d.cameraId === camera.id)?.boxes || [];
 
+  // Manipula clique no vídeo para adicionar pontos ao novo polígono
+  const handleVideoClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!editandoAreas) return;
+    const rect = (e.target as HTMLDivElement).getBoundingClientRect();
+    const x = (e.clientX - rect.left) / 480;
+    const y = (e.clientY - rect.top) / 270;
+    setNovoPoligono([...novoPoligono, [x, y]]);
+  };
+
   return (
     <div>
       <h2>Detalhes da Câmera</h2>
       <h3>{camera.nome}</h3>
-      <div style={{ position: 'relative', width: 480, height: 270 }}>
+      <button
+        onClick={() => {
+          setEditandoAreas(!editandoAreas);
+          setNovoPoligono([]);
+        }}
+        style={{ marginBottom: 8 }}
+      >
+        {editandoAreas ? 'Cancelar Edição' : 'Editar Áreas'}
+      </button>
+      <div
+        style={{
+          position: 'relative',
+          width: 480,
+          height: 270,
+          marginTop: 16,
+          cursor: editandoAreas ? 'crosshair' : 'default'
+        }}
+        onClick={handleVideoClick}
+      >
         {renderCameraMedia()}
         <svg
           width={480}
@@ -120,6 +151,15 @@ const CameraDetails: React.FC = () => {
               strokeWidth={2}
             />
           ))}
+          {/* Novo polígono em edição */}
+          {editandoAreas && novoPoligono.length > 0 && (
+            <polygon
+              points={novoPoligono.map(([x, y]) => `${x * 480},${y * 270}`).join(' ')}
+              fill="rgba(0,0,255,0.2)"
+              stroke="blue"
+              strokeWidth={2}
+            />
+          )}
           {/* Detecções IA */}
           {boxes.map((box, idx) => (
             <rect
@@ -135,6 +175,19 @@ const CameraDetails: React.FC = () => {
           ))}
         </svg>
       </div>
+      {/* Botão para salvar novo polígono */}
+      {editandoAreas && novoPoligono.length > 2 && (
+        <button
+          onClick={() => {
+            alert('Área salva (simulação)');
+            setNovoPoligono([]);
+            setEditandoAreas(false);
+          }}
+          style={{ marginTop: 8 }}
+        >
+          Salvar Área Proibida
+        </button>
+      )}
       <div style={{ marginTop: 16 }}>
         <strong>Status:</strong> {camera.status} <br />
         <strong>Latitude:</strong> {camera.latitude} <br />
