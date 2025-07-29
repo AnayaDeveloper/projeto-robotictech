@@ -29,6 +29,42 @@ const camerasMock = [
   }
 ];
 
+// Mock de áreas proibidas (polígonos)
+const areasProibidasMock = [
+  {
+    cameraId: '1',
+    areas: [
+      [
+        [0.1, 0.2],
+        [0.3, 0.2],
+        [0.3, 0.4],
+        [0.1, 0.4]
+      ]
+    ]
+  },
+  {
+    cameraId: '2',
+    areas: [
+      [
+        [0.5, 0.5],
+        [0.7, 0.5],
+        [0.7, 0.7],
+        [0.5, 0.7]
+      ]
+    ]
+  }
+];
+
+// Mock de detecções da IA (bounding boxes)
+const deteccoesIAMock = [
+  {
+    cameraId: '1',
+    boxes: [
+      [0.15, 0.25, 0.1, 0.15]
+    ]
+  }
+];
+
 const CameraDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const camera = camerasMock.find(cam => cam.id === id);
@@ -59,11 +95,46 @@ const CameraDetails: React.FC = () => {
     );
   };
 
+  // Busca áreas proibidas e detecções para a câmera atual
+  const areas = areasProibidasMock.find(a => a.cameraId === camera.id)?.areas || [];
+  const boxes = deteccoesIAMock.find(d => d.cameraId === camera.id)?.boxes || [];
+
   return (
     <div>
       <h2>Detalhes da Câmera</h2>
       <h3>{camera.nome}</h3>
-      {renderCameraMedia()}
+      <div style={{ position: 'relative', width: 480, height: 270 }}>
+        {renderCameraMedia()}
+        <svg
+          width={480}
+          height={270}
+          style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
+        >
+          {/* Áreas proibidas */}
+          {areas.map((area, idx) => (
+            <polygon
+              key={idx}
+              points={area.map(([x, y]) => `${x * 480},${y * 270}`).join(' ')}
+              fill="rgba(255,0,0,0.2)"
+              stroke="red"
+              strokeWidth={2}
+            />
+          ))}
+          {/* Detecções IA */}
+          {boxes.map((box, idx) => (
+            <rect
+              key={idx}
+              x={box[0] * 480}
+              y={box[1] * 270}
+              width={box[2] * 480}
+              height={box[3] * 270}
+              fill="none"
+              stroke="yellow"
+              strokeWidth={2}
+            />
+          ))}
+        </svg>
+      </div>
       <div style={{ marginTop: 16 }}>
         <strong>Status:</strong> {camera.status} <br />
         <strong>Latitude:</strong> {camera.latitude} <br />

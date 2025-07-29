@@ -25,7 +25,7 @@ const alertsMock: Alert[] = [
   },
   {
     id: 'a3',
-    cameraNome: 'Corredor',
+    cameraNome: 'Fundos',
     tipo: 'Invasão',
     dataHora: '2025-07-28 09:30',
     frameUrl: 'https://via.placeholder.com/120x80?text=Frame+3',
