@@ -65,6 +65,9 @@ const deteccoesIAMock = [
   }
 ];
 
+// Mock de EPIs disponíveis
+const episDisponiveis = ['Capacete', 'Colete', 'Óculos', 'Luva'];
+
 const CameraDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const camera = camerasMock.find(cam => cam.id === id);
@@ -72,6 +75,8 @@ const CameraDetails: React.FC = () => {
   // Estado para edição de áreas
   const [editandoAreas, setEditandoAreas] = React.useState(false);
   const [novoPoligono, setNovoPoligono] = React.useState<[number, number][]>([]);
+  // Estado para EPIs selecionados
+  const [episSelecionados, setEpisSelecionados] = React.useState<string[]>([]);
 
   if (!camera) {
     return <div>Câmera não encontrada.</div>;
@@ -192,6 +197,27 @@ const CameraDetails: React.FC = () => {
         <strong>Status:</strong> {camera.status} <br />
         <strong>Latitude:</strong> {camera.latitude} <br />
         <strong>Longitude:</strong> {camera.longitude}
+      </div>
+      {/* Configuração de EPIs */}
+      <div style={{ marginTop: 24 }}>
+        <strong>Configuração de EPIs monitorados:</strong>
+        <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
+          {episDisponiveis.map(epi => (
+            <label key={epi}>
+              <input
+                type="checkbox"
+                checked={episSelecionados.includes(epi)}
+                onChange={() => {
+                  setEpisSelecionados(episSelecionados.includes(epi)
+                    ? episSelecionados.filter(e => e !== epi)
+                    : [...episSelecionados, epi]
+                  );
+                }}
+              />
+              {epi}
+            </label>
+          ))}
+        </div>
       </div>
     </div>
   );
