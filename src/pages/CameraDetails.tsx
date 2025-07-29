@@ -38,32 +38,32 @@ const CameraDetails: React.FC = () => {
   }
 
   // Renderização inteligente do vídeo/imagem
-//   const renderCameraMedia = () => {
-//     if (camera.url.endsWith('.mp4')) {
-//       return <video src={camera.url} width="480" height="270" controls />;
-//     }
-//     if (camera.url.endsWith('.mjpeg')) {
-//       return <img src={camera.url} width="480" height="270" alt={camera.nome} />;
-//     }
-//     if (camera.url.endsWith('.m3u8')) {
-//       return (
-//         <div style={{ width: 480, height: 270, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 14 }}>
-//           Stream HLS não suportado nativamente
-//         </div>
-//       );
-//     }
-//     return (
-//       <div style={{ width: 480, height: 270, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 14 }}>
-//         Tipo de stream não suportado
-//       </div>
-//     );
-//   };
+  const renderCameraMedia = () => {
+    if (camera.url.endsWith('.mp4')) {
+      return <video src={camera.url} width="480" height="270" controls />;
+    }
+    if (camera.url.endsWith('.mjpeg')) {
+      return <img src={camera.url} width="480" height="270" alt={camera.nome} />;
+    }
+    if (camera.url.endsWith('.m3u8')) {
+      return (
+        <div style={{ width: 480, height: 270, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 14 }}>
+          Stream HLS não suportado nativamente
+        </div>
+      );
+    }
+    return (
+      <div style={{ width: 480, height: 270, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 14 }}>
+        Tipo de stream não suportado
+      </div>
+    );
+  };
 
   return (
     <div>
       <h2>Detalhes da Câmera</h2>
       <h3>{camera.nome}</h3>
-      {/* {renderCameraMedia()} */}
+      {renderCameraMedia()}
       <div style={{ marginTop: 16 }}>
         <strong>Status:</strong> {camera.status} <br />
         <strong>Latitude:</strong> {camera.latitude} <br />
