@@ -8,7 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/camera/:id" element={<CameraDetails cameraId={''} />} />
+        <Route path="/camera/:id" element={<CameraDetails />} />
       </Routes>
     </BrowserRouter>
   );

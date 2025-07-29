@@ -21,9 +21,9 @@ const statusColor = {
 };
 
 const initialCameras: Camera[] = [
-  { id: '1', nome: 'Entrada Principal', url: 'https://www.w3schools.com/html/mov_bbb.mp4', status: 'online', latitude: '-23.5505', longitude: '-46.6333' },
-  { id: '2', nome: 'Estacionamento', url: 'https://www.w3schools.com/html/movie.mp4', status: 'alerta', latitude: '-23.5510', longitude: '-46.6340' },
-  { id: '3', nome: 'Corredor', url: 'https://www.w3schools.com/html/mov_bbb.mp4', status: 'offline', latitude: '-23.5520', longitude: '-46.6350' },
+  { id: '1', nome: 'Entrada Principal', url: 'https://videos.pexels.com/video-files/28835670/12490947_2560_1440_25fps.mp4', status: 'online', latitude: '-23.5505', longitude: '-46.6333' },
+  { id: '2', nome: 'Estacionamento', url: 'https://videos.pexels.com/video-files/9788684/9788684-uhd_2560_1440_30fps.mp4', status: 'alerta', latitude: '-23.5510', longitude: '-46.6340' },
+  { id: '3', nome: 'Fundos', url: 'https://videos.pexels.com/video-files/32011319/13643572_2560_1440_24fps.mp4', status: 'offline', latitude: '-23.5520', longitude: '-46.6350' },
 ];
 
 const CameraGrid: React.FC = () => {

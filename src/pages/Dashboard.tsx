@@ -5,7 +5,7 @@ import AlertList from '../components/AlertList';
 const Dashboard: React.FC = () => {
   return (
     <div>
-      <h2>Dashboard de Câmeras</h2>
+      <h2>Sistema de Monitoramento de Câmeras</h2>
       <CameraGrid/>
       <AlertList/>
     </div>
