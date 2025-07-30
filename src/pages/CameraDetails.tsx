@@ -68,6 +68,41 @@ const deteccoesIAMock = [
 // Mock de EPIs disponíveis
 const episDisponiveis = ['Capacete', 'Colete', 'Óculos', 'Luva'];
 
+// Mock de histórico de eventos
+const eventosMock = [
+  {
+    cameraId: '1',
+    eventos: [
+      {
+        id: 'e1',
+        tipo: 'Invasão',
+        dataHora: '2025-07-29 10:15',
+        descricao: 'Pessoa entrou em área proibida',
+        frameUrl: 'https://picsum.photos/id/22/4434/3729'
+      },
+      {
+        id: 'e2',
+        tipo: 'EPI',
+        dataHora: '2025-07-29 09:50',
+        descricao: 'Pessoa sem capacete detectada',
+        frameUrl: 'https://picsum.photos/id/22/4434/3729'
+      }
+    ]
+  },
+  {
+    cameraId: '2',
+    eventos: [
+      {
+        id: 'e3',
+        tipo: 'Invasão',
+        dataHora: '2025-07-29 08:30',
+        descricao: 'Movimento suspeito detectado',
+        frameUrl: 'https://via.placeholder.com/120x80?text=Frame+3'
+      }
+    ]
+  }
+];
+
 const CameraDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const camera = camerasMock.find(cam => cam.id === id);
@@ -104,9 +139,10 @@ const CameraDetails: React.FC = () => {
     );
   };
 
-  // Busca áreas proibidas e detecções para a câmera atual
+  // Busca áreas proibidas, detecções e eventos para a câmera atual
   const areas = areasProibidasMock.find(a => a.cameraId === camera.id)?.areas || [];
   const boxes = deteccoesIAMock.find(d => d.cameraId === camera.id)?.boxes || [];
+  const eventos = eventosMock.find(e => e.cameraId === camera.id)?.eventos || [];
 
   // Manipula clique no vídeo para adicionar pontos ao novo polígono
   const handleVideoClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -218,6 +254,22 @@ const CameraDetails: React.FC = () => {
             </label>
           ))}
         </div>
+      </div>
+      {/* Histórico de eventos */}
+      <div style={{ marginTop: 32 }}>
+        <strong>Histórico de Eventos</strong>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {eventos.map(evento => (
+            <li key={evento.id} style={{ display: 'flex', alignItems: 'center', marginBottom: 16, borderBottom: '1px solid #eee', paddingBottom: 8 }}>
+              <img src={evento.frameUrl} alt="Frame" width={80} height={60} style={{ marginRight: 16, borderRadius: 4 }} />
+              <div>
+                <strong>{evento.tipo}</strong> <br />
+                {evento.dataHora} <br />
+                <span style={{ fontSize: 13 }}>{evento.descricao}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
