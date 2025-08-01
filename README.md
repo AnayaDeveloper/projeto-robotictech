@@ -2,6 +2,10 @@
 
 Interface para monitoramento inteligente de câmeras de segurança, com IA para detecção de eventos de risco.
 
+## 🚀 Deploy
+
+**Acesse o projeto online:** [https://projeto-robotictech-6u45.vercel.app/](https://projeto-robotictech-6u45.vercel.app/)
+
 ## Recursos implementados
 
 ### 🎥 Monitoramento de Câmeras
