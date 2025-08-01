@@ -5,7 +5,7 @@ interface Camera {
   nome: string;
 }
 
-export interface AnalyticsFilters {
+export interface AnalyticsFiltersType {
   dateRange: {
     startDate: string;
     endDate: string;
@@ -15,8 +15,8 @@ export interface AnalyticsFilters {
 }
 
 interface AnalyticsFiltersProps {
-  filters: AnalyticsFilters;
-  onFiltersChange: (filters: AnalyticsFilters) => void;
+  filters: AnalyticsFiltersType;
+  onFiltersChange: (filters: AnalyticsFiltersType) => void;
 }
 
 // Mock das câmeras disponíveis
@@ -60,23 +60,7 @@ const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({ filters, onFiltersC
     });
   };
 
-  const handleSelectAllCameras = () => {
-    const allCameraIds = availableCameras.map(cam => cam.id);
-    const isAllSelected = allCameraIds.every(id => filters.selectedCameras.includes(id));
-    
-    onFiltersChange({
-      ...filters,
-      selectedCameras: isAllSelected ? [] : allCameraIds
-    });
-  };
 
-  const clearFilters = () => {
-    onFiltersChange({
-      dateRange: { startDate: '', endDate: '' },
-      alertTypes: ['Invasão', 'EPI'],
-      selectedCameras: []
-    });
-  };
 
   return (
     <div>

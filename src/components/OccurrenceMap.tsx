@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
-import '../styles/leaflet.css';
 
 interface Camera {
   id: string;

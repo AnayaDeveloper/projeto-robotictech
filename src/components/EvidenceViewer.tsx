@@ -11,13 +11,7 @@ interface Evidence {
   descricao: string;
 }
 
-interface EvidenceViewerProps {
-  filters: {
-    dateRange: { startDate: string; endDate: string };
-    alertTypes: ('Invasão' | 'EPI')[];
-    selectedCameras: string[];
-  };
-}
+interface EvidenceViewerProps {}
 
 const mockEvidences: Evidence[] = [
   {
@@ -82,19 +76,14 @@ const mockEvidences: Evidence[] = [
   }
 ];
 
-const EvidenceViewer: React.FC<EvidenceViewerProps> = ({ filters }) => {
+const EvidenceViewer: React.FC<EvidenceViewerProps> = () => {
   const [selectedEvidence, setSelectedEvidence] = useState<Evidence | null>(null);
   const [sortBy, setSortBy] = useState<'dataHora' | 'confianca' | 'tipo'>('dataHora');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
 
   const filteredEvidences = useMemo(() => {
-    let filtered = mockEvidences.filter(evidence => {
-      const typeMatch = filters.alertTypes.length === 0 || filters.alertTypes.includes(evidence.tipo);
-      const cameraMatch = filters.selectedCameras.length === 0 || filters.selectedCameras.includes(evidence.cameraId);
-      
-      return typeMatch && cameraMatch;
-    });
+    let filtered = mockEvidences;
 
     filtered.sort((a, b) => {
       let comparison = 0;
@@ -115,7 +104,7 @@ const EvidenceViewer: React.FC<EvidenceViewerProps> = ({ filters }) => {
     });
 
     return filtered;
-  }, [filters, sortBy, sortOrder]);
+  }, [sortBy, sortOrder]);
 
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 90) return '#28a745';
@@ -421,12 +410,6 @@ const EvidenceViewer: React.FC<EvidenceViewerProps> = ({ filters }) => {
         fontSize: '14px'
       }}>
         <strong>📊 Resumo:</strong> {filteredEvidences.length} evidência(s) encontrada(s)
-        {filters.alertTypes.length > 0 && (
-          <span> • Tipos: {filters.alertTypes.join(', ')}</span>
-        )}
-        {filters.selectedCameras.length > 0 && (
-          <span> • Câmeras: {filters.selectedCameras.join(', ')}</span>
-        )}
       </div>
     </div>
   );

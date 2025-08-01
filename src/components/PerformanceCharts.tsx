@@ -15,13 +15,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-interface PerformanceChartsProps {
-  filters: {
-    dateRange: { startDate: string; endDate: string };
-    alertTypes: ('Invasão' | 'EPI')[];
-    selectedCameras: string[];
-  };
-}
+interface PerformanceChartsProps {}
 
 const timelineData = [
   { hora: '08:00', invasao: 2, epi: 1 },
@@ -45,9 +39,7 @@ const topCameras = [
   { camera: 'Fundos', alertas: 8 }
 ];
 
-const COLORS = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
-
-const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ filters }) => {
+const PerformanceCharts: React.FC<PerformanceChartsProps> = () => {
   return (
     <div style={{ marginTop: '30px' }}>
       <h3>📊 Gráficos de Desempenho</h3>
@@ -105,7 +97,7 @@ const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ filters }) => {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"

@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AnalyticsFilters from '../components/AnalyticsFilters';
+import AnalyticsFilters, { type AnalyticsFiltersType } from '../components/AnalyticsFilters';
 import OccurrenceMap from '../components/OccurrenceMap';
 import PerformanceCharts from '../components/PerformanceCharts';
 import EvidenceViewer from '../components/EvidenceViewer';
 
-export interface AnalyticsFilters {
-  dateRange: {
-    startDate: string;
-    endDate: string;
-  };
-  alertTypes: ('Invasão' | 'EPI')[];
-  selectedCameras: string[];
-}
-
 const Analytics: React.FC = () => {
-  const [filters, setFilters] = useState<AnalyticsFilters>({
+  const [filters, setFilters] = useState<AnalyticsFiltersType>({
     dateRange: {
       startDate: '',
       endDate: ''
@@ -29,7 +20,7 @@ const Analytics: React.FC = () => {
     alertCount: number;
   } | null>(null);
 
-  const handleFiltersChange = (newFilters: AnalyticsFilters) => {
+  const handleFiltersChange = (newFilters: AnalyticsFiltersType) => {
     setFilters(newFilters);
     console.log('Filtros aplicados:', newFilters);
   };
@@ -95,9 +86,9 @@ const Analytics: React.FC = () => {
         </div>
       )}
 
-      <PerformanceCharts filters={filters} />
+      <PerformanceCharts />
 
-      <EvidenceViewer filters={filters} />
+      <EvidenceViewer />
     </div>
   );
 };
