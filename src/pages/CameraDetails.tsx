@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';  
 
 // Mock das câmeras
 const camerasMock = [
@@ -14,7 +15,7 @@ const camerasMock = [
   {
     id: '2',
     nome: 'Estacionamento',
-    url: 'https://videos.pexels.com/video-files/9788684/9788684-uhd_2560_1440_30fps.mp4',
+    url: 'https://videos.pexels.com/video-files/28835670/12490947_2560_1440_25fps.mp4',
     status: 'alerta',
     latitude: '-22.9711',
     longitude: '-43.1822'
@@ -78,14 +79,14 @@ const eventosMock = [
         tipo: 'Invasão',
         dataHora: '2025-07-29 10:15',
         descricao: 'Pessoa entrou em área proibida',
-        frameUrl: 'https://picsum.photos/id/22/4434/3729'
+        frameUrl: 'https://picsum.photos/120/80?random=1'
       },
       {
         id: 'e2',
         tipo: 'EPI',
         dataHora: '2025-07-29 09:50',
         descricao: 'Pessoa sem capacete detectada',
-        frameUrl: 'https://picsum.photos/id/22/4434/3729'
+        frameUrl: 'https://picsum.photos/120/80?random=2'
       }
     ]
   },
@@ -97,7 +98,19 @@ const eventosMock = [
         tipo: 'Invasão',
         dataHora: '2025-07-29 08:30',
         descricao: 'Movimento suspeito detectado',
-        frameUrl: 'https://via.placeholder.com/120x80?text=Frame+3'
+        frameUrl: 'https://picsum.photos/120/80?random=3'
+      }
+    ]
+  },
+  {
+    cameraId: '3',
+    eventos: [
+      {
+        id: 'e4',
+        tipo: 'EPI',
+        dataHora: '2025-07-29 07:45',
+        descricao: 'Trabalhador sem colete detectado',
+        frameUrl: 'https://picsum.photos/120/80?random=4'
       }
     ]
   }
@@ -114,26 +127,64 @@ const CameraDetails: React.FC = () => {
   const [episSelecionados, setEpisSelecionados] = React.useState<string[]>([]);
 
   if (!camera) {
-    return <div>Câmera não encontrada.</div>;
+    return (
+      <div className="container-fluid">
+        <div className="card">
+          <div className="card-body text-center">
+            <div style={{ fontSize: '4rem', marginBottom: 'var(--space-lg)' }}>📹</div>
+            <h2>Câmera não encontrada</h2>
+            <p className="text-muted">A câmera solicitada não existe no sistema.</p>
+            <button className="btn btn-primary" onClick={() => window.history.back()}>
+              ← Voltar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Renderização inteligente do vídeo/imagem
   const renderCameraMedia = () => {
     if (camera.url.endsWith('.mp4')) {
-      return <video src={camera.url} width="480" height="270" controls />;
+      return (
+        <video 
+          src={camera.url} 
+          width="480" 
+          height="270" 
+          controls
+          preload="metadata"
+          style={{
+            background: '#000',
+            objectFit: 'cover',
+            borderRadius: '8px',
+            boxShadow: 'none',
+            border: 'none',
+            display: 'block'
+          }}
+          onError={(e) => {
+            console.log('Erro ao carregar vídeo:', camera.nome);
+            e.currentTarget.style.background = '#f0f0f0';
+          }}
+          onLoadStart={() => {
+            console.log('Carregando vídeo:', camera.nome);
+          }}
+        >
+          Seu navegador não suporta vídeos HTML5.
+        </video>
+      );
     }
     if (camera.url.endsWith('.mjpeg')) {
-      return <img src={camera.url} width="480" height="270" alt={camera.nome} />;
+      return <img src={camera.url} width="480" height="270" alt={camera.nome} style={{ background: '#000', borderRadius: '8px' }} />;
     }
     if (camera.url.endsWith('.m3u8')) {
       return (
-        <div style={{ width: 480, height: 270, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 14 }}>
+        <div style={{ width: 480, height: 270, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, borderRadius: '8px' }}>
           Stream HLS não suportado nativamente
         </div>
       );
     }
     return (
-      <div style={{ width: 480, height: 270, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: 14 }}>
+      <div style={{ width: 480, height: 270, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 14, borderRadius: '8px' }}>
         Tipo de stream não suportado
       </div>
     );
@@ -153,29 +204,44 @@ const CameraDetails: React.FC = () => {
     setNovoPoligono([...novoPoligono, [x, y]]);
   };
 
+
+
   return (
-    <div>
-      <h2>Detalhes da Câmera</h2>
-      <h3>{camera.nome}</h3>
-      <button
-        onClick={() => {
-          setEditandoAreas(!editandoAreas);
-          setNovoPoligono([]);
-        }}
-        style={{ marginBottom: 8 }}
-      >
-        {editandoAreas ? 'Cancelar Edição' : 'Editar Áreas'}
-      </button>
-      <div
-        style={{
-          position: 'relative',
-          width: 480,
-          height: 270,
-          marginTop: 16,
-          cursor: editandoAreas ? 'crosshair' : 'default'
-        }}
-        onClick={handleVideoClick}
-      >
+    <div className="container-fluid fade-in">
+      {/* Header */}
+      <section style={{ 
+        marginTop: 'var(--space-lg)', 
+        marginBottom: 'var(--space-xl)' 
+      }}>
+        <div className="clean-header">
+          <h1 className="professional-title">
+            <span className="title-icon">🎥</span>
+            <span className="title-text">Detalhes da Câmera</span>
+          </h1>
+          <Link 
+            to="/" 
+            className="btn btn-secondary btn-back"
+          >
+            ← Dashboard
+          </Link>
+        </div>
+      </section>
+
+      {/* Container do Vídeo */}
+      <section style={{ 
+        marginTop: 'var(--space-xl)', 
+        marginBottom: 'var(--space-xl)' 
+      }}>
+        <div
+          style={{
+            position: 'relative',
+            width: 480,
+            height: 270,
+            marginBottom: 'var(--space-lg)',
+            cursor: editandoAreas ? 'crosshair' : 'default'
+          }}
+          onClick={handleVideoClick}
+        >
         {renderCameraMedia()}
         <svg
           width={480}
@@ -215,62 +281,125 @@ const CameraDetails: React.FC = () => {
             />
           ))}
         </svg>
-      </div>
-      {/* Botão para salvar novo polígono */}
-      {editandoAreas && novoPoligono.length > 2 && (
+        </div>
+
+        {/* Botão Editar Áreas - Abaixo do vídeo */}
         <button
           onClick={() => {
-            alert('Área salva (simulação)');
+            setEditandoAreas(!editandoAreas);
             setNovoPoligono([]);
-            setEditandoAreas(false);
           }}
-          style={{ marginTop: 8 }}
+          className={`btn ${editandoAreas ? 'btn-danger' : 'btn-secondary'}`}
+          style={{ marginBottom: 'var(--space-md)' }}
         >
-          Salvar Área Proibida
+          {editandoAreas ? 'Cancelar Edição' : 'Editar Áreas'}
         </button>
-      )}
-      <div style={{ marginTop: 16 }}>
-        <strong>Status:</strong> {camera.status} <br />
-        <strong>Latitude:</strong> {camera.latitude} <br />
-        <strong>Longitude:</strong> {camera.longitude}
-      </div>
-      {/* Configuração de EPIs */}
-      <div style={{ marginTop: 24 }}>
-        <strong>Configuração de EPIs monitorados:</strong>
-        <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
-          {episDisponiveis.map(epi => (
-            <label key={epi}>
-              <input
-                type="checkbox"
-                checked={episSelecionados.includes(epi)}
-                onChange={() => {
-                  setEpisSelecionados(episSelecionados.includes(epi)
-                    ? episSelecionados.filter(e => e !== epi)
-                    : [...episSelecionados, epi]
-                  );
-                }}
-              />
-              {epi}
-            </label>
-          ))}
+
+        {/* Botão para salvar novo polígono */}
+        {editandoAreas && novoPoligono.length > 2 && (
+          <button
+            onClick={() => {
+              alert('Área salva (simulação)');
+              setNovoPoligono([]);
+              setEditandoAreas(false);
+            }}
+            className="btn btn-success"
+            style={{ marginTop: 'var(--space-md)' }}
+          >
+            Salvar Área Proibida
+          </button>
+        )}
+      </section>
+      
+      {/* Seção de Informações */}
+      <section style={{ 
+        marginTop: 'var(--space-xl)', 
+        marginBottom: 'var(--space-xl)' 
+      }}>
+        <div className="card">
+          <div className="card-header">
+            <h4>📊 Informações da Câmera</h4>
+          </div>
+          <div className="card-body">
+            <p><strong>Status:</strong> {camera.status}</p>
+            <p><strong>Latitude:</strong> {camera.latitude}</p>
+            <p><strong>Longitude:</strong> {camera.longitude}</p>
+          </div>
         </div>
-      </div>
-      {/* Histórico de eventos */}
-      <div style={{ marginTop: 32 }}>
-        <strong>Histórico de Eventos</strong>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {eventos.map(evento => (
-            <li key={evento.id} style={{ display: 'flex', alignItems: 'center', marginBottom: 16, borderBottom: '1px solid #eee', paddingBottom: 8 }}>
-              <img src={evento.frameUrl} alt="Frame" width={80} height={60} style={{ marginRight: 16, borderRadius: 4 }} />
-              <div>
-                <strong>{evento.tipo}</strong> <br />
-                {evento.dataHora} <br />
-                <span style={{ fontSize: 13 }}>{evento.descricao}</span>
+      </section>
+
+      {/* Seção de Configuração de EPIs */}
+      <section style={{ 
+        marginTop: 'var(--space-xl)', 
+        marginBottom: 'var(--space-xl)' 
+      }}>
+        <div className="card">
+        <div className="card-header">
+          <h4>🦺 Configuração de EPIs</h4>
+        </div>
+        <div className="card-body">
+          <div style={{ display: 'flex', gap: 'var(--space-lg)', flexWrap: 'wrap' }}>
+            {episDisponiveis.map(epi => (
+              <label key={epi} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+                <input
+                  type="checkbox"
+                  checked={episSelecionados.includes(epi)}
+                  onChange={() => {
+                    setEpisSelecionados(episSelecionados.includes(epi)
+                      ? episSelecionados.filter(e => e !== epi)
+                      : [...episSelecionados, epi]
+                    );
+                  }}
+                />
+                {epi}
+              </label>
+            ))}
+          </div>
+        </div>
+        </div>
+      </section>
+      
+      {/* Seção de Histórico de Eventos */}
+      <section style={{ 
+        marginTop: 'var(--space-xl)', 
+        marginBottom: 'var(--space-xl)' 
+      }}>
+        <div className="card">
+          <div className="card-header">
+            <h4>📋 Histórico de Eventos</h4>
+          </div>
+          <div className="card-body">
+            {eventos.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+                {eventos.map(evento => (
+                  <div key={evento.id} className="card" style={{ background: 'var(--bg-secondary)' }}>
+                    <div className="card-body">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+                        <img 
+                          src={evento.frameUrl} 
+                          alt="Frame" 
+                          width={80} 
+                          height={60} 
+                          style={{ borderRadius: 'var(--radius-md)' }} 
+                        />
+                        <div>
+                          <strong>{evento.tipo}</strong> <br />
+                          {evento.dataHora} <br />
+                          <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                            {evento.descricao}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+            ) : (
+              <p className="text-muted text-center">Nenhum evento registrado para esta câmera.</p>
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

@@ -26,7 +26,7 @@ const mockEvidences: Evidence[] = [
     cameraNome: 'Entrada Principal',
     tipo: 'Invasão',
     dataHora: '2025-01-28 08:15:23',
-    frameUrl: 'https://via.placeholder.com/300x200/ff6b6b/ffffff?text=Invasão+Detectada',
+    frameUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=200&fit=crop&crop=center',
     confianca: 95,
     descricao: 'Pessoa não autorizada detectada na entrada'
   },
@@ -36,7 +36,7 @@ const mockEvidences: Evidence[] = [
     cameraNome: 'Estacionamento',
     tipo: 'EPI',
     dataHora: '2025-01-28 09:02:15',
-    frameUrl: 'https://via.placeholder.com/300x200/4ecdc4/ffffff?text=EPI+Não+Detectado',
+    frameUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=300&h=200&fit=crop&crop=center',
     confianca: 88,
     descricao: 'Funcionário sem capacete de segurança'
   },
@@ -46,7 +46,7 @@ const mockEvidences: Evidence[] = [
     cameraNome: 'Fundos',
     tipo: 'Invasão',
     dataHora: '2025-01-28 09:30:45',
-    frameUrl: 'https://via.placeholder.com/300x200/ff6b6b/ffffff?text=Invasão+Área+Restrita',
+    frameUrl: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=300&h=200&fit=crop&crop=center',
     confianca: 92,
     descricao: 'Acesso não autorizado à área restrita'
   },
@@ -56,7 +56,7 @@ const mockEvidences: Evidence[] = [
     cameraNome: 'Entrada Principal',
     tipo: 'EPI',
     dataHora: '2025-01-28 10:15:30',
-    frameUrl: 'https://via.placeholder.com/300x200/4ecdc4/ffffff?text=EPI+Ausente',
+    frameUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=300&h=200&fit=crop&crop=center',
     confianca: 91,
     descricao: 'Funcionário sem óculos de proteção'
   },
@@ -66,7 +66,7 @@ const mockEvidences: Evidence[] = [
     cameraNome: 'Entrada Principal',
     tipo: 'Invasão',
     dataHora: '2025-01-28 11:20:12',
-    frameUrl: 'https://via.placeholder.com/300x200/ff6b6b/ffffff?text=Tentativa+Invasão',
+    frameUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=300&h=200&fit=crop&crop=center',
     confianca: 87,
     descricao: 'Tentativa de acesso fora do horário'
   },
@@ -76,7 +76,7 @@ const mockEvidences: Evidence[] = [
     cameraNome: 'Estacionamento',
     tipo: 'Invasão',
     dataHora: '2025-01-28 12:45:18',
-    frameUrl: 'https://via.placeholder.com/300x200/ff6b6b/ffffff?text=Veículo+Suspeito',
+    frameUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop&crop=center',
     confianca: 83,
     descricao: 'Veículo não autorizado no estacionamento'
   }
@@ -86,6 +86,7 @@ const EvidenceViewer: React.FC<EvidenceViewerProps> = ({ filters }) => {
   const [selectedEvidence, setSelectedEvidence] = useState<Evidence | null>(null);
   const [sortBy, setSortBy] = useState<'dataHora' | 'confianca' | 'tipo'>('dataHora');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set());
 
   const filteredEvidences = useMemo(() => {
     let filtered = mockEvidences.filter(evidence => {
@@ -125,6 +126,10 @@ const EvidenceViewer: React.FC<EvidenceViewerProps> = ({ filters }) => {
   const getTypeColor = (type: string) => {
     return type === 'Invasão' ? '#ff6b6b' : '#4ecdc4';
   };
+
+  // Debug: Log das evidências filtradas
+  console.log('🔍 Evidências filtradas:', filteredEvidences);
+  console.log('🖼️ URLs das imagens:', filteredEvidences.map(e => ({ id: e.id, frameUrl: e.frameUrl })));
 
   return (
     <div style={{ marginTop: '30px' }}>
@@ -184,15 +189,80 @@ const EvidenceViewer: React.FC<EvidenceViewerProps> = ({ filters }) => {
             onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
           >
-            <img
-              src={evidence.frameUrl}
-              alt={`Evidência ${evidence.id}`}
-              style={{
-                width: '100%',
-                height: '200px',
-                objectFit: 'cover'
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <img
+                src={evidence.frameUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmaWxsPSIjNmM3NTdkIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiPgogICAgU2VtIGltYWdlbQogIDwvdGV4dD4KICA8L3N2Zz4='}
+                alt={`Evidência ${evidence.id}`}
+                style={{
+                  width: '100%',
+                  height: '200px',
+                  objectFit: 'cover',
+                  backgroundColor: '#f8f9fa'
+                }}
+                onLoadStart={() => {
+                  console.log(`🔄 Iniciando carregamento: ${evidence.frameUrl}`);
+                  setLoadingImages(prev => new Set(prev).add(evidence.id));
+                }}
+                onLoad={() => {
+                  setLoadingImages(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(evidence.id);
+                    return newSet;
+                  });
+                  console.log(`✅ Imagem carregada com sucesso: ${evidence.frameUrl}`);
+                }}
+                onError={(e) => {
+                  setLoadingImages(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(evidence.id);
+                    return newSet;
+                  });
+                  const target = e.target as HTMLImageElement;
+                  console.log(`❌ ERRO ao carregar imagem: ${evidence.frameUrl}`);
+                  console.log(`❌ Detalhes do erro:`, e);
+                  target.src = `data:image/svg+xml;base64,${btoa(`
+                    <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+                      <rect width="100%" height="100%" fill="#f8f9fa"/>
+                      <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#6c757d" font-family="Arial, sans-serif" font-size="14">
+                        📷 Frame não disponível
+                      </text>
+                    </svg>
+                  `)}`;
+                }}
+              />
+              
+              {loadingImages.has(evidence.id) && (
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(248, 249, 250, 0.8)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                  color: '#6c757d'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid #dee2e6',
+                      borderTop: '2px solid #007bff',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    Carregando...
+                  </div>
+                </div>
+              )}
+            </div>
             
             <div style={{ padding: '15px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -300,7 +370,19 @@ const EvidenceViewer: React.FC<EvidenceViewerProps> = ({ filters }) => {
                 maxHeight: '300px',
                 objectFit: 'contain',
                 borderRadius: '4px',
-                marginBottom: '15px'
+                marginBottom: '15px',
+                backgroundColor: '#f8f9fa'
+              }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = `data:image/svg+xml;base64,${btoa(`
+                  <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" fill="#f8f9fa"/>
+                    <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#6c757d" font-family="Arial, sans-serif" font-size="16">
+                      📷 Frame não disponível
+                    </text>
+                  </svg>
+                `)}`;
               }}
             />
             

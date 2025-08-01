@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CameraForm from './CameraForm';
+import Modal from './Modal';
 import { v4 as uuidv4 } from 'uuid';
 
 type CameraStatus = 'online' | 'offline' | 'alerta';
@@ -22,14 +23,24 @@ const statusColor = {
 
 const initialCameras: Camera[] = [
   { id: '1', nome: 'Entrada Principal', url: 'https://videos.pexels.com/video-files/28835670/12490947_2560_1440_25fps.mp4', status: 'online', latitude: '-23.5505', longitude: '-46.6333' },
-  { id: '2', nome: 'Estacionamento', url: 'https://videos.pexels.com/video-files/9788684/9788684-uhd_2560_1440_30fps.mp4', status: 'alerta', latitude: '-23.5510', longitude: '-46.6340' },
+  { id: '2', nome: 'Estacionamento', url: 'https://videos.pexels.com/video-files/28835670/12490947_2560_1440_25fps.mp4', status: 'alerta', latitude: '-23.5510', longitude: '-46.6340' },
   { id: '3', nome: 'Fundos', url: 'https://videos.pexels.com/video-files/32011319/13643572_2560_1440_24fps.mp4', status: 'offline', latitude: '-23.5520', longitude: '-46.6350' },
 ];
 
-const CameraGrid: React.FC = () => {
+interface CameraGridProps {
+  showForm?: boolean;
+  setShowForm?: (show: boolean) => void;
+  editCamera?: Camera | null;
+  setEditCamera?: (camera: Camera | null) => void;
+}
+
+const CameraGrid: React.FC<CameraGridProps> = ({ 
+  showForm = false, 
+  setShowForm = () => {}, 
+  editCamera = null, 
+  setEditCamera = () => {} 
+}) => {
   const [cameras, setCameras] = useState<Camera[]>(initialCameras);
-  const [showForm, setShowForm] = useState(false);
-  const [editCamera, setEditCamera] = useState<Camera | null>(null);
   const navigate = useNavigate();
 
   const handleAddCamera = (data: { nome: string; url: string; latitude: string; longitude: string }) => {
@@ -57,24 +68,42 @@ const CameraGrid: React.FC = () => {
 
   return (
     <div>
-      <button onClick={() => { setShowForm(true); setEditCamera(null); }}>Adicionar Câmera</button>
-      {showForm && (
+      <Modal
+        isOpen={showForm}
+        onClose={() => { setShowForm(false); setEditCamera(null); }}
+        title={editCamera ? 'Editar Câmera' : 'Adicionar Nova Câmera'}
+      >
         <CameraForm
           onSubmit={editCamera ? handleEditCamera : handleAddCamera}
           initialData={editCamera ? editCamera : undefined}
           onCancel={() => { setShowForm(false); setEditCamera(null); }}
         />
-      )}
-      <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: 20 }}>
+      </Modal>
+      <div className="grid grid-3">
         {cameras.map((camera) => (
           <div
             key={camera.id}
-            style={{ border: '1px solid #ccc', borderRadius: 8, padding: 16, width: 250, cursor: 'pointer' }}
+            className="camera-card mobile-center-card"
+            style={{ cursor: 'pointer' }}
             onClick={() => navigate(`/camera/${camera.id}`)}
           >
-            <video src={camera.url} width="220" height="120" controls />
+            <video 
+              src={camera.url} 
+              controls 
+              preload="metadata"
+              onError={(e) => {
+                console.log('Erro ao carregar vídeo:', camera.nome);
+                e.currentTarget.style.background = '#f0f0f0';
+              }}
+              onLoadStart={() => {
+                console.log('Carregando vídeo:', camera.nome);
+              }}
+            >
+              Seu navegador não suporta vídeos HTML5.
+            </video>
             <h3>{camera.nome}</h3>
-            <div>
+            
+            <div className="status-indicator">
               <span
                 style={{
                   display: 'inline-block',
@@ -82,32 +111,34 @@ const CameraGrid: React.FC = () => {
                   height: 12,
                   borderRadius: '50%',
                   background: statusColor[camera.status],
-                  marginRight: 8,
                 }}
               ></span>
               {camera.status.charAt(0).toUpperCase() + camera.status.slice(1)}
             </div>
-            <div style={{ marginTop: 8 }}>
+            
+            <div className="button-group">
               <button
+                className="btn btn-sm btn-outline-primary"
                 onClick={e => {
                   e.stopPropagation();
                   setEditCamera(camera);
                   setShowForm(true);
                 }}
               >
-                Editar
+                ✏️ Editar
               </button>
               <button
+                className="btn btn-sm btn-outline-danger"
                 onClick={e => {
                   e.stopPropagation();
                   handleRemoveCamera(camera.id);
                 }}
-                style={{ marginLeft: 8, color: 'red' }}
               >
-                Remover
+                🗑️ Remover
               </button>
             </div>
-            <div style={{ fontSize: 12, marginTop: 8 }}>
+            
+            <div className="coordinates">
               <strong>Lat:</strong> {camera.latitude} <strong>Lon:</strong> {camera.longitude}
             </div>
           </div>

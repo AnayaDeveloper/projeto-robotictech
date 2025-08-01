@@ -52,7 +52,7 @@ const PerformanceCharts: React.FC<PerformanceChartsProps> = ({ filters }) => {
     <div style={{ marginTop: '30px' }}>
       <h3>📊 Gráficos de Desempenho</h3>
       
-      <div style={{ 
+      <div className="analytics-charts-grid" style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', 
         gap: '30px',

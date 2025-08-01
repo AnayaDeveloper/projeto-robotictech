@@ -79,126 +79,163 @@ const AnalyticsFilters: React.FC<AnalyticsFiltersProps> = ({ filters, onFiltersC
   };
 
   return (
-    <div style={{ 
-      backgroundColor: '#f8f9fa', 
-      padding: '20px', 
-      borderRadius: '8px', 
-      marginBottom: '20px',
-      border: '1px solid #e9ecef'
-    }}>
-      <h3 style={{ marginTop: 0, marginBottom: '20px' }}>🔍 Filtros Globais</h3>
-      
-      <div style={{ display: 'flex', gap: '30px', flexWrap: 'wrap' }}>
+    <div>
+      {/* Grid de Filtros */}
+      <div className="grid grid-3" style={{ marginBottom: 'var(--space-xl)' }}>
         
         {/* Filtro de Data */}
-        <div style={{ minWidth: '250px' }}>
-          <h4 style={{ marginBottom: '10px' }}>📅 Período</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>Data Inicial:</label>
-              <input
-                type="date"
-                value={filters.dateRange.startDate}
-                onChange={(e) => handleDateRangeChange('startDate', e.target.value)}
-                style={{ padding: '6px', borderRadius: '4px', border: '1px solid #ccc', width: '100%' }}
-              />
-            </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px' }}>Data Final:</label>
-              <input
-                type="date"
-                value={filters.dateRange.endDate}
-                onChange={(e) => handleDateRangeChange('endDate', e.target.value)}
-                style={{ padding: '6px', borderRadius: '4px', border: '1px solid #ccc', width: '100%' }}
-              />
+        <div className="card">
+          <div className="card-header">
+            <h4 style={{ margin: 0 }}>📅 Período</h4>
+          </div>
+          <div className="card-body">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: 'var(--space-xs)', 
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: 'var(--text-primary)'
+                }}>
+                  Data Inicial:
+                </label>
+                <input
+                  type="date"
+                  value={filters.dateRange.startDate}
+                  onChange={(e) => handleDateRangeChange('startDate', e.target.value)}
+                  style={{ width: '100%' }}
+                />
+              </div>
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: 'var(--space-xs)', 
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: 'var(--text-primary)'
+                }}>
+                  Data Final:
+                </label>
+                <input
+                  type="date"
+                  value={filters.dateRange.endDate}
+                  onChange={(e) => handleDateRangeChange('endDate', e.target.value)}
+                  style={{ width: '100%' }}
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Filtro de Tipo de Alerta */}
-        <div style={{ minWidth: '200px' }}>
-          <h4 style={{ marginBottom: '10px' }}>🚨 Tipos de Alerta</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={filters.alertTypes.includes('Invasão')}
-                onChange={(e) => handleAlertTypeChange('Invasão', e.target.checked)}
-              />
-              <span>🚪 Invasão</span>
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={filters.alertTypes.includes('EPI')}
-                onChange={(e) => handleAlertTypeChange('EPI', e.target.checked)}
-              />
-              <span>🦺 EPI</span>
-            </label>
+        <div className="card">
+          <div className="card-header">
+            <h4 style={{ margin: 0 }}>🚨 Tipos de Alerta</h4>
+          </div>
+          <div className="card-body">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+              <label style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 'var(--space-sm)', 
+                cursor: 'pointer',
+                padding: 'var(--space-xs)',
+                borderRadius: 'var(--radius-sm)',
+                transition: 'background-color 0.2s ease',
+                fontSize: '0.875rem'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={filters.alertTypes.includes('Invasão')}
+                  onChange={(e) => handleAlertTypeChange('Invasão', e.target.checked)}
+                  style={{ 
+                    margin: 0,
+                    width: '16px',
+                    height: '16px',
+                    flexShrink: 0
+                  }}
+                />
+                <span style={{ lineHeight: '1.2' }}>🚪 Invasão</span>
+              </label>
+              <label style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 'var(--space-sm)', 
+                cursor: 'pointer',
+                padding: 'var(--space-xs)',
+                borderRadius: 'var(--radius-sm)',
+                transition: 'background-color 0.2s ease',
+                fontSize: '0.875rem'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={filters.alertTypes.includes('EPI')}
+                  onChange={(e) => handleAlertTypeChange('EPI', e.target.checked)}
+                  style={{ 
+                    margin: 0,
+                    width: '16px',
+                    height: '16px',
+                    flexShrink: 0
+                  }}
+                />
+                <span style={{ lineHeight: '1.2' }}>🦺 EPI</span>
+              </label>
+            </div>
           </div>
         </div>
 
         {/* Filtro de Câmeras */}
-        <div style={{ minWidth: '250px' }}>
-          <h4 style={{ marginBottom: '10px' }}>📹 Câmeras</h4>
-          <div style={{ marginBottom: '10px' }}>
-            <button
-              onClick={handleSelectAllCameras}
-              style={{
-                padding: '4px 8px',
-                fontSize: '12px',
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              {availableCameras.every(cam => filters.selectedCameras.includes(cam.id)) 
-                ? 'Desmarcar Todas' 
-                : 'Selecionar Todas'
-              }
-            </button>
+        <div className="card">
+          <div className="card-header">
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              gap: 'var(--space-sm)'
+            }}>
+              <h4 style={{ margin: 0, flexShrink: 0 }}>📹 Câmeras</h4>
+            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '120px', overflowY: 'auto' }}>
-            {availableCameras.map(camera => (
-              <label key={camera.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                <input
-                  type="checkbox"
-                  checked={filters.selectedCameras.includes(camera.id)}
-                  onChange={(e) => handleCameraChange(camera.id, e.target.checked)}
-                />
-                <span>{camera.nome}</span>
-              </label>
-            ))}
+          <div className="card-body">
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 'var(--space-xs)', 
+              maxHeight: '120px', 
+              overflowY: 'auto',
+              paddingRight: 'var(--space-xs)'
+            }}>
+              {availableCameras.map(camera => (
+                <label 
+                  key={camera.id} 
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 'var(--space-sm)', 
+                    cursor: 'pointer',
+                    padding: 'var(--space-xs)',
+                    borderRadius: 'var(--radius-sm)',
+                    transition: 'background-color 0.2s ease',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={filters.selectedCameras.includes(camera.id)}
+                    onChange={(e) => handleCameraChange(camera.id, e.target.checked)}
+                    style={{ 
+                      margin: 0,
+                      width: '16px',
+                      height: '16px',
+                      flexShrink: 0
+                    }}
+                  />
+                  <span style={{ lineHeight: '1.2' }}>{camera.nome}</span>
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Botões de Ação */}
-      <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-        <button
-          onClick={clearFilters}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#6c757d',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          🗑️ Limpar Filtros
-        </button>
-        
-        <div style={{ 
-          padding: '8px 12px', 
-          backgroundColor: '#d4edda', 
-          color: '#155724', 
-          borderRadius: '4px',
-          fontSize: '14px'
-        }}>
-          ✅ Filtros aplicados automaticamente
         </div>
       </div>
     </div>
