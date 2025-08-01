@@ -1308,3 +1308,31 @@ img, video {
   max-width: 100%;
   height: auto;
 }
+
+/* Correções para Leaflet Map */
+.leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+  z-index: 1;
+}
+
+.leaflet-tile {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.leaflet-tile-container {
+  overflow: visible !important;
+}
+
+.leaflet-layer {
+  overflow: visible !important;
+}
+
+.leaflet-map-pane {
+  overflow: visible !important;
+}
+
+.leaflet-tile-pane {
+  overflow: visible !important;
+}
